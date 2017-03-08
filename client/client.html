@@ -1,0 +1,172 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Our simple HTTP server</title>
+  <link rel="stylesheet" type="text/css" href="/style.css">
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.min.js"></script>
+  <script type="text/babel">
+  // Code taken from Aidan Kaufman Http-Api-Assignment-2
+    
+    const parseJSON = (xhr, content) => {
+      const obj = JSON.parse(xhr.response);
+      console.dir(obj);
+        
+      /*if(obj.message) {
+          const p = document.createElement('p');
+          p.textContent = ``;
+          content.appendChild(p);
+      }*/
+      if(obj.quote) {
+          console.log(obj.quote);
+          const pTag = document.createElement('p');
+          const quote = obj.quote;
+          pTag.textContent = `"${quote}"`;
+          content.appendChild(pTag);
+      }
+      if(obj.name) {
+          console.log(obj.name);
+          const pTag = document.createElement('p');
+          const name = obj.name;
+          pTag.textContent = `-${name}`;
+          content.appendChild(pTag);
+      }
+      
+      
+    };
+
+    // handles an xhr response
+    const handleResponse = (xhr) => {
+        // grab the content section
+        const content = document.querySelector("#content");
+        
+        // handle different status codes
+        switch(xhr.status) {
+          case 200: // success
+            content.innerHTML = `<b>Success</b>`;
+            break;
+          case 201: // created
+            content.innerHTML = `<b>New Quote!</b>`;
+            break;
+          case 204: // updated (send nothing back)
+            content.innerHTML = `<b>Updated (No Content)</b>`;
+            return;
+          case 304: // not updated
+            content.innerHTML = `<b>Not Modified</b>`;
+            break;
+          case 400: // bad request
+            content.innerHTML = `<b>You must submit both a name and a quote</b>`;
+            break;
+          case 404: // not found
+            content.innerHTML = `<b>Not found</b>`;
+          default: // any other status code
+            content.innerHTML = `<b>Resource Not Found</b>`;
+            break;
+        }
+        
+        //finally, parse the response
+        if(xhr.response){
+            parseJSON(xhr, content);
+        }
+        
+    };
+
+    // updates the content on the screen
+    const updateContent = (e, getForm) => {
+        console.log('update pressed');
+        const url = getForm.querySelector('#findQuoteField').value;
+        const method = getForm.querySelector('#methodSelect').value;
+
+        /*const findAction = getForm.getAttribute('action');
+        const findMethod = getForm.getAttribute('method');
+        
+        const findNameField = getForm.querySelector('#nameField');
+        const findQuoteField = getForm.querySelector('#quoteField');*/
+        
+        const xhr = new XMLHttpRequest();
+        
+        xhr.open(method, url);
+        
+        xhr.setRequestHeader('Accept', 'application/json');
+        
+        xhr.onload = () => handleResponse(xhr);
+        
+        xhr.send();
+        
+        e.preventDefault();
+        
+        return false;
+    }
+
+    // posts a new user to the objects
+    const sendPost = (e, postForm) => {
+        const nameAction = postForm.getAttribute('action');
+        const nameMethod = postForm.getAttribute('method');
+        
+        const nameField = postForm.querySelector('#nameField');
+        const quoteField = postForm.querySelector('#quoteField');
+                
+        const xhr = new XMLHttpRequest();
+        
+        xhr.open(nameMethod, nameAction);
+        
+        xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+        
+        xhr.setRequestHeader('Accept', 'application/json');
+        
+        xhr.onload = () => handleResponse(xhr);
+        
+        const formData = `name=${nameField.value}&quote=${quoteField.value}`;
+
+        xhr.send(formData);
+        
+        e.preventDefault();
+        
+        return false;
+    }
+
+    // initialization function
+    const init = () => {
+        const postForm = document.querySelector("#postForm");
+        const postHandler = (e) => sendPost(e, postForm);
+        postForm.addEventListener('submit', postHandler);
+        
+        const getForm = document.querySelector('#getForm');
+        const getHandler = (e) => updateContent(e, getForm);
+        getForm.addEventListener('submit', getHandler); 
+    };
+
+    window.onload = init;
+
+
+  </script>
+</head>
+<body>
+  <section id="top">
+    <h3>Quote Repo</h3>
+    <form id="postForm" action="/addQuote" method="post">
+      <label for="name">Name: </label>
+      <input id="nameField" type="text" name="name" />
+      <label for="quote">Quote: </label>
+      <input id="quoteField" type="text" name="quote" />
+      <input type="submit" value="Add Quote" />
+    </form>
+    <form id="getForm" action="/getQuotes" method="get">
+      <!--<select id='findQuoteField'>
+        <option value='/getQuotes'>/getQuotes</option>
+        <option value='/notReal'>/notReal</option>
+      </select>-->
+      <!--<label for="name">Find quote from: </label>
+      <input id="findQuoteField" type="text" name="name" />
+      <select id="methodSelect">
+        <option value="get">GET</option>
+        <option value="head">HEAD</option>
+      </select>
+      <input type="submit" value="Get Quotes" />-->
+    </form>
+  </section>
+  <section id="content">
+  </section>
+</body>
+</html>
