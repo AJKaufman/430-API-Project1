@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Our simple HTTP server</title>
+  <title>Quote Repository</title>
   <link rel="stylesheet" type="text/css" href="/style.css">
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.min.js"></script>
@@ -72,21 +72,15 @@
         
     };
 
-    // updates the content on the screen
-    const updateContent = (e, getForm) => {
-        console.log('update pressed');
+    // Displays the quote by the person in the search box
+    const displayQuote = (e, getForm) => {
+        console.log('display quote pressed');
         const url = getForm.querySelector('#findQuoteField').value;
-        const method = getForm.querySelector('#methodSelect').value;
-
-        /*const findAction = getForm.getAttribute('action');
-        const findMethod = getForm.getAttribute('method');
-        
-        const findNameField = getForm.querySelector('#nameField');
-        const findQuoteField = getForm.querySelector('#quoteField');*/
+        const findAction = getForm.getAttribute('action');
         
         const xhr = new XMLHttpRequest();
         
-        xhr.open(method, url);
+        xhr.open('get', findAction);
         
         xhr.setRequestHeader('Accept', 'application/json');
         
@@ -97,10 +91,31 @@
         e.preventDefault();
         
         return false;
-    }
+    };
+
+    // updates the content on the screen
+    const checkQuote = (e, getForm) => {
+        console.log('check quote pressed');
+        const url = getForm.querySelector('#checkQuoteField').value;
+        const findAction = getForm.getAttribute('action');
+
+        const xhr = new XMLHttpRequest();
+        
+        xhr.open('head', findAction);
+        
+        xhr.setRequestHeader('Accept', 'application/json');
+        
+        xhr.onload = () => handleResponse(xhr);
+        
+        xhr.send();
+        
+        e.preventDefault();
+        
+        return false;
+    };    
 
     // posts a new user to the objects
-    const sendPost = (e, postForm) => {
+    const addQuoteToServer = (e, postForm) => {
         const nameAction = postForm.getAttribute('action');
         const nameMethod = postForm.getAttribute('method');
         
@@ -124,17 +139,22 @@
         e.preventDefault();
         
         return false;
-    }
+    };
 
     // initialization function
     const init = () => {
         const postForm = document.querySelector("#postForm");
-        const postHandler = (e) => sendPost(e, postForm);
+        const postHandler = (e) => addQuoteToServer(e, postForm);
         postForm.addEventListener('submit', postHandler);
         
         const getForm = document.querySelector('#getForm');
-        const getHandler = (e) => updateContent(e, getForm);
-        getForm.addEventListener('submit', getHandler); 
+        const getHandler = (e) => displayQuote(e, getForm);
+        getForm.addEventListener('submit', getHandler);
+        
+        const checkForm = document.querySelector('#checkForm')
+        const checkHandler = (e) => checkQuote(e, checkForm);
+        checkForm.addEventListener('submit', checkHandler);
+        
     };
 
     window.onload = init;
@@ -152,19 +172,22 @@
       <input id="quoteField" type="text" name="quote" />
       <input type="submit" value="Add Quote" />
     </form>
-    <form id="getForm" action="/getQuotes" method="get">
+    <form id="getForm" action="/getQuote" method="get">
       <!--<select id='findQuoteField'>
-        <option value='/getQuotes'>/getQuotes</option>
+        <option value='/getQuote'>/getQuote</option>
         <option value='/notReal'>/notReal</option>
       </select>-->
-      <!--<label for="name">Find quote from: </label>
+      <label for="name">Find quote from: </label>
       <input id="findQuoteField" type="text" name="name" />
-      <select id="methodSelect">
-        <option value="get">GET</option>
-        <option value="head">HEAD</option>
-      </select>
-      <input type="submit" value="Get Quotes" />-->
+      <input type="submit" value="Get Quotes" />
     </form>
+    <form id="checkForm" action="/getQuote" method="get">
+        <label for="name">Check if quotes exist from: </label>
+        <input id="checkQuoteField" type="text" name="name" />
+        <input type="submit" value="Are there Quotes?" />
+    </form>
+
+      
   </section>
   <section id="content">
   </section>

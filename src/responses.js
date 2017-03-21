@@ -44,20 +44,17 @@ const respondJSONMeta = (request, response, status) => {
 };
 
 // GET
-const getQuote = (request, response) => {
-  /* if (!quotes[name]) {
-    const responseJSON = {
-      text: 'No quote by this person',
-    };
-  } else {
-    const responseJSON = {
-      text: quotes[body.name].quote,
-    };
-  }*/
-
+const getQuote = (request, response, params) => {
+  console.log('getting quote');
   const responseJSON = {
-    quotes,
+    text: 'No quote by this person',
   };
+  console.dir(params.name);
+  console.dir(quotes);
+  if (quotes[params.name]) {
+    console.log('list has this speaker');
+    responseJSON.text = quotes[params.name].name.quote;
+  }
 
     // check the client's if-none-match header to see the
     // number the client is returning from etag
@@ -78,10 +75,15 @@ const getQuote = (request, response) => {
 
 // HEAD
 const getQuoteMeta = (request, response) => {
+  if (quotes[params.name]) {
+    console.log('it has this quote');
+    responseJSON.text = quotes[params.name].name.quote;
+  }
+    
   if (request.headers['if-none-match'] === digest) {
     return respondJSONMeta(request, response, 304);
   }
-
+    
   return respondJSONMeta(request, response, 200);
 };
 

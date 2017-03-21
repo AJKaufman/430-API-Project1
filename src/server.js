@@ -11,7 +11,12 @@ const onRequest = (request, response) => {
   console.log(request.url);
 
   const parsedUrl = url.parse(request.url);
+  //const quoteString = Buffer.concat(body).toString();
+  //const params = query.parse(quoteString);
+  const params = query.parse(parsedUrl.query);
 
+
+  console.log(`onRequest ${parsedUrl.pathname}`);
   // check the request method (get, head, post, etc)
   switch (request.method) {
     case 'GET':
@@ -23,31 +28,7 @@ const onRequest = (request, response) => {
         handler.getCss(request, response);
       } else if (parsedUrl.pathname === '/getQuote') {
         // if get Quote, send Quote object back
-        /* const res = response;
-
-        const body = [];
-
-        request.on('error', () => {
-          res.statusCode = 400;
-          res.end();
-        });
-
-        request.on('data', (chunk) => {
-          body.push(chunk);
-        });
-
-        request.on('end', () => {
-          const bodyString = Buffer.concat(body).toString();
-
-          const bodyParams = query.parse(bodyString);
-
-          handler.getQuote(request, res, bodyParams);
-        });*/
-        handler.getQuote(request, response);
-//      }
-//        else if (parsedUrl.pathname === '/updateUser') {
-//        // if update user, change our user object
-//        handler.updateUser(request, response);
+        handler.getQuote(request, response, params);
       } else {
         // if not found, send 404 message
         handler.notFound(request, response);
