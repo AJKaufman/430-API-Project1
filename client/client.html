@@ -33,16 +33,13 @@
       // the quote was retrieved successfully
       if(obj.getQuote) {
           console.dir(obj.getQuote);
-          const pTag = document.createElement('p');
           const speakerGotten = obj.getQuote.name;
           const pTag2 = document.createElement('p');
           const quoteGotten = obj.getQuote.quote;
           const pTag3 = document.createElement('p');
           
-          pTag.textContent = 'Quote retrieved!';
           pTag2.textContent = `"${quoteGotten}"`;
           pTag3.textContent = `-${speakerGotten}`;
-          content.appendChild(pTag);
           content.appendChild(pTag2);
           content.appendChild(pTag3);
       }

@@ -45,21 +45,19 @@ const respondJSONMeta = (request, response, status) => {
 
 // GET, retrieves the desired quote
 const getQuote = (request, response, params) => {
-    
-  if(!quotes[params.name]){
+  if (!quotes[params.name]) {
     const responseJSON = {
       getQuoteError: 'This person has no quotes',
     };
     return respond(request, response, 404, responseJSON);
   }
-    
+
   console.log('getting quote');
   const responseJSON = {
     getQuote: quotes[params.name],
   };
   console.dir(responseJSON.getQuote);
-      
-    
+
 
     // check the client's if-none-match header to see the
     // number the client is returning from etag
@@ -80,13 +78,12 @@ const getQuote = (request, response, params) => {
 
 // HEAD Sends back whether there is a quote from the stated name
 const getQuoteMeta = (request, response, params) => {
-
-  if(!quotes[params.name]){
+  if (!quotes[params.name]) {
     return respondJSONMeta(request, response, 404);
   }
 
   console.log(quotes[params.name]);
-    
+
   if (request.headers['if-none-match'] === digest) {
     return respondJSONMeta(request, response, 304);
   }
