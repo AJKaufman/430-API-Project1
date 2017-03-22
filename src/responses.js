@@ -43,18 +43,23 @@ const respondJSONMeta = (request, response, status) => {
   response.end();
 };
 
-// GET
+// GET, retrieves the desired quote
 const getQuote = (request, response, params) => {
+    
+  if(!quotes[params.name]){
+    const responseJSON = {
+      getQuoteError: 'This person has no quotes',
+    };
+    return respond(request, response, 404, responseJSON);
+  }
+    
   console.log('getting quote');
   const responseJSON = {
-    text: 'No quote by this person',
+    getQuote: quotes[params.name],
   };
-  console.dir(params.name);
-  console.dir(quotes);
-  if (quotes[params.name]) {
-    console.log('list has this speaker');
-    responseJSON.text = quotes[params.name].name.quote;
-  }
+  console.dir(responseJSON.getQuote);
+      
+    
 
     // check the client's if-none-match header to see the
     // number the client is returning from etag
@@ -73,21 +78,23 @@ const getQuote = (request, response, params) => {
 };
 
 
-// HEAD
-const getQuoteMeta = (request, response) => {
-  if (quotes[params.name]) {
-    console.log('it has this quote');
-    responseJSON.text = quotes[params.name].name.quote;
+// HEAD Sends back whether there is a quote from the stated name
+const getQuoteMeta = (request, response, params) => {
+
+  if(!quotes[params.name]){
+    return respondJSONMeta(request, response, 404);
   }
+
+  console.log(quotes[params.name]);
     
   if (request.headers['if-none-match'] === digest) {
     return respondJSONMeta(request, response, 304);
   }
-    
+
   return respondJSONMeta(request, response, 200);
 };
 
-
+// adds a quote to the repo
 const addQuote = (request, response, body) => {
   const responseJSON = {
     message: 'Name and quote are both required.',

@@ -11,8 +11,6 @@ const onRequest = (request, response) => {
   console.log(request.url);
 
   const parsedUrl = url.parse(request.url);
-  //const quoteString = Buffer.concat(body).toString();
-  //const params = query.parse(quoteString);
   const params = query.parse(parsedUrl.query);
 
 
@@ -37,7 +35,7 @@ const onRequest = (request, response) => {
     case 'HEAD':
       if (parsedUrl.pathname === '/getQuote') {
         // if get Quote, send meta data back with etag
-        handler.getQuoteMeta(request, response);
+        handler.getQuoteMeta(request, response, params);
       } else {
         // if not found send 404 without body
         handler.notFoundMeta(request, response);

@@ -9,7 +9,10 @@
   <script type="text/babel">
   // Code taken from Aidan Kaufman Http-Api-Assignment-2
     
+    let speaker = {};
+
     const parseJSON = (xhr, content) => {
+      console.dir(xhr.response);
       const obj = JSON.parse(xhr.response);
       console.dir(obj);
         
@@ -18,6 +21,46 @@
           p.textContent = ``;
           content.appendChild(p);
       }*/
+
+      // If there was a 404 error retrieving the quote
+      if(obj.getQuoteError) {
+          const pTag = document.createElement('p');
+          const message = obj.getQuoteError;
+          
+          pTag.textContent = message;
+          content.appendChild(pTag);
+      }
+      // the quote was retrieved successfully
+      if(obj.getQuote) {
+          console.dir(obj.getQuote);
+          const pTag = document.createElement('p');
+          const speakerGotten = obj.getQuote.name;
+          const pTag2 = document.createElement('p');
+          const quoteGotten = obj.getQuote.quote;
+          const pTag3 = document.createElement('p');
+          
+          pTag.textContent = 'Quote retrieved!';
+          pTag2.textContent = `"${quoteGotten}"`;
+          pTag3.textContent = `-${speakerGotten}`;
+          content.appendChild(pTag);
+          content.appendChild(pTag2);
+          content.appendChild(pTag3);
+      }
+        
+      // checking if 
+      if(obj.checkQuote) {
+          console.dir(obj.checkQuote);
+          const pTag = document.createElement('p');
+          const pTag2 = document.createElement('p');
+          const speakerGotten = obj.getQuote.name;
+          
+          pTag.textContent = 'Quote exists!';
+          pTag2.textContent = `"${speakerGotten}"`;
+          content.appendChild(pTag);
+          content.appendChild(pTag2);
+      }
+    
+      // adding a quote
       if(obj.quote) {
           console.log(obj.quote);
           const pTag = document.createElement('p');
@@ -44,7 +87,7 @@
         // handle different status codes
         switch(xhr.status) {
           case 200: // success
-            content.innerHTML = `<b>Success</b>`;
+            content.innerHTML = `<b>Yes, quotes exist for this person!</b>`;
             break;
           case 201: // created
             content.innerHTML = `<b>New Quote!</b>`;
@@ -75,12 +118,14 @@
     // Displays the quote by the person in the search box
     const displayQuote = (e, getForm) => {
         console.log('display quote pressed');
-        const url = getForm.querySelector('#findQuoteField').value;
-        const findAction = getForm.getAttribute('action');
+        speaker = getForm.querySelector('#findQuoteField').value;
+        let url = getForm.getAttribute('action');
+        
+        url += `?name=${speaker}`;
         
         const xhr = new XMLHttpRequest();
         
-        xhr.open('get', findAction);
+        xhr.open('get', url);
         
         xhr.setRequestHeader('Accept', 'application/json');
         
@@ -96,12 +141,14 @@
     // updates the content on the screen
     const checkQuote = (e, getForm) => {
         console.log('check quote pressed');
-        const url = getForm.querySelector('#checkQuoteField').value;
-        const findAction = getForm.getAttribute('action');
+        speaker = getForm.querySelector('#checkQuoteField').value;
+        let url = getForm.getAttribute('action');
 
+        url += `?name=${speaker}`;
+        
         const xhr = new XMLHttpRequest();
         
-        xhr.open('head', findAction);
+        xhr.open('head', url);
         
         xhr.setRequestHeader('Accept', 'application/json');
         
