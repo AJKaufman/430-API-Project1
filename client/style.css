@@ -7,13 +7,25 @@ html, body {
   color: #EEF0EB;
 }
 
+h3 {
+  margin: 2em;
+  margin-top: 0em;
+}
+
 #top {
   text-align: center;
   margin: 0 auto;
+  
 }
 
 #top h1 {
   font-size: 2em;
+  background-color: #230C33;
+  opacity: 0.5;
+}
+
+.intro {
+  margin-bottom: 1.2em;
 }
 
 #content {
@@ -21,5 +33,18 @@ html, body {
   font-size: 2em;
   text-align: center;
   background-color: #B4B8AB;
+  opacity: 0.5;
   color: #153243;
+}
+
+#postForm {
+  margin-bottom: 2em;
+}
+
+#getForm {
+  margin-bottom: 2em;
+}
+
+#checkForm {
+  margin-bottom: 2em;
 }

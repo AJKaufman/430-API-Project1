@@ -84,13 +84,13 @@
         // handle different status codes
         switch(xhr.status) {
           case 200: // success
-            content.innerHTML = `<b>Yes, quotes exist for this person!</b>`;
+            content.innerHTML = `<b>Quote found</b>`;
             break;
           case 201: // created
-            content.innerHTML = `<b>New Quote!</b>`;
+            content.innerHTML = `<b>New quote created</b>`;
             break;
           case 204: // updated (send nothing back)
-            content.innerHTML = `<b>Updated (No Content)</b>`;
+            content.innerHTML = `<b>Quote updated</b>`;
             return;
           case 304: // not updated
             content.innerHTML = `<b>Not Modified</b>`;
@@ -101,7 +101,7 @@
           case 404: // not found
             content.innerHTML = `<b>Not found</b>`;
           default: // any other status code
-            content.innerHTML = `<b>Resource Not Found</b>`;
+            content.innerHTML = `<b>Quote Not Found</b>`;
             break;
         }
         
@@ -117,7 +117,7 @@
         console.log('display quote pressed');
         speaker = getForm.querySelector('#findQuoteField').value;
         let url = getForm.getAttribute('action');
-        
+      
         url += `?name=${speaker}`;
         
         const xhr = new XMLHttpRequest();
@@ -140,7 +140,7 @@
         console.log('check quote pressed');
         speaker = getForm.querySelector('#checkQuoteField').value;
         let url = getForm.getAttribute('action');
-
+      
         url += `?name=${speaker}`;
         
         const xhr = new XMLHttpRequest();
@@ -163,9 +163,10 @@
         const nameAction = postForm.getAttribute('action');
         const nameMethod = postForm.getAttribute('method');
         
-        const nameField = postForm.querySelector('#nameField');
+        let nameField = postForm.querySelector('#nameField');
         const quoteField = postForm.querySelector('#quoteField');
-                
+             
+      
         const xhr = new XMLHttpRequest();
         
         xhr.open(nameMethod, nameAction);
@@ -208,22 +209,24 @@
 </head>
 <body>
   <section id="top">
-    <h3>Quote Repo</h3>
+    <h1>Quote Repo</h1>
+    <div class="intro">Hey there! This is a quote repository that lets you store quotes by a person</div>
+    <div class="intro">You can also retrieve quotes by a person, and check if a person has any quotes</div>
+    <div class="intro">NOTE: Names are case sensitive.</div>
     <form id="postForm" action="/addQuote" method="post">
-      <label for="name">Name: </label>
-      <input id="nameField" type="text" name="name" />
-      <label for="quote">Quote: </label>
-      <input id="quoteField" type="text" name="quote" />
+      <label for="name">Submit Quote Here: </label>
+      <input id="nameField" placeholder="Enter name here!" type="text" name="name" />
+      <input id="quoteField" placeholder="Enter quote here!" type="text" name="quote" />
       <input type="submit" value="Add Quote" />
     </form>
     <form id="getForm" action="/getQuote" method="get">
       <label for="name">Find quote from: </label>
-      <input id="findQuoteField" type="text" name="name" />
+      <input id="findQuoteField" placeholder="Enter name here!" type="text" name="name" />
       <input type="submit" value="Get Quotes" />
     </form>
     <form id="checkForm" action="/getQuote" method="get">
         <label for="name">Check if quote exists from: </label>
-        <input id="checkQuoteField" type="text" name="name" />
+        <input id="checkQuoteField" placeholder="Enter name here!" type="text" name="name" />
         <input type="submit" value="Are there Quotes?" />
     </form>
 
