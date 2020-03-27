@@ -19,7 +19,7 @@
   },
   "homepage": "https://github.com/AJKaufman/430-API-Project1#readme",
   "devDependencies": {
-    "eslint": "^3.17.1",
+    "eslint": "^4.18.2",
     "eslint-config-airbnb": "^14.1.0",
     "eslint-plugin-import": "^2.2.0"
   }
